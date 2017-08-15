@@ -31,9 +31,6 @@ class Form extends React.Component {
         this.sayThanks();
     }
 
-    checkUser = () => {
-        this.props.checkUser()
-    };
 
     render() {
         const sayThanks = this.state.registred;
