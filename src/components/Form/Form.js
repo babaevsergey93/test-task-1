@@ -2,13 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './Form.css';
 import { addUser } from '../../actions/index';
+import PropTypes from 'prop-types';
+
 class Form extends React.Component {
     state = {
         name: '',
         surname: '',
         email: '',
         password: '',
-        registered: false,
+        showErrorMessage: false,
+        showSuccessMessage: false
     };
 
     resetFields = () => (
@@ -20,10 +23,18 @@ class Form extends React.Component {
         })
     );
 
-    sayThanks = () => (
-        this.setState((prevState) => ({
-            registered: !prevState.registered,
-        }))
+    showError = () => (
+        this.setState({
+            showErrorMessage: true,
+            showSuccessMessage: false,
+        })
+    );
+
+    showSuccess = () => (
+        this.setState({
+            showSuccessMessage: true,
+            showErrorMessage: false,
+        })
     );
 
     handleSubmit = () =>  {
@@ -35,9 +46,9 @@ class Form extends React.Component {
         if(name !== '' && surname !== '' && email !== '' && password !== '') {
             this.props.addUser(name, surname, email, password);
             this.resetFields();
-            this.sayThanks();
+            this.showSuccess();
         } else {
-           alert('Вы пытаетесь отправить форму с пустыми полями, пожалуйста заполните все поля.')
+            this.showError();
         }
     };
 
@@ -61,22 +72,58 @@ class Form extends React.Component {
     };
 
     render() {
-        const sayThanks = this.state.registered;
+        const error = this.state.showErrorMessage;
+        const success = this.state.showSuccessMessage;
         return (
-            sayThanks
-                ?
-                <h1>Спасибо за регистрацию</h1>
-                :
                 <div>
-                    <form className="form" onSubmit = {(e) => {
-                        e.preventDefault();
-                    }}>
-                        <input onChange={(e) => {this.handleChange(e)}} className='form-input' type="text" placeholder='Name'/>
-                        <input onChange={(e) => {this.handleChange(e)}} className='form-input' type="text" placeholder='Surname'/>
-                        <input onChange={(e) => {this.handleChange(e)}} className='form-input' type="text" placeholder='e-mail'/>
-                        <input onChange={(e) => {this.handleChange(e)}} className='form-input' type="password" placeholder='Password'/>
-                        <input onClick = {this.handleSubmit} className='form-button' type="submit" value='Регистрация' />
+                    <form
+                        className="form"
+                        onSubmit = {(e) => {
+                            e.preventDefault();
+                        }}
+                    >
+                        <input
+                            value={this.state.name}
+                            onChange={(e) => {this.handleChange(e)}}
+                            className='form-input'
+                            type="text"
+                            placeholder='Name'
+                        />
+                        <input
+                            value={this.state.surname}
+                            onChange={(e) => {this.handleChange(e)}}
+                            className='form-input'
+                            type="text"
+                            placeholder='Surname'
+                        />
+                        <input
+                            value={this.state.email}
+                            onChange={(e) => {this.handleChange(e)}}
+                            className='form-input'
+                            type="text"
+                            placeholder='e-mail'
+                        />
+                        <input
+                            value={this.state.password}
+                            onChange={(e) => {this.handleChange(e)}}
+                            className='form-input'
+                            type="password"
+                            placeholder='Password'/>
+                        <input
+                            onClick = {this.handleSubmit}
+                            className='form-button'
+                            type="submit"
+                            value='Регистрация'
+                        />
                     </form>
+                    <span
+                        className="error-message"
+                        style={{ display: error ? 'block' : 'none'}}
+                    > Заполните все поля пожалуйста </span>
+                    <span
+                        className="success-message"
+                        style={{ display: success ? 'block' : 'none'}}
+                    > Спасибо за регистрацию </span>
                 </div>
         )
     }
@@ -89,5 +136,11 @@ const mapStateToProps = (store) => ({
 const mapDispatchToProps = (dispatch) => ({
     addUser: (name, surname, email, password) => dispatch(addUser(name, surname, email, password)),
 });
+
+
+Form.propTypes = {
+    users: PropTypes.array.isRequired,
+    addUser: PropTypes.func.isRequired,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form);

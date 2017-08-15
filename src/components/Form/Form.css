@@ -34,3 +34,16 @@
 h1 {
     text-align: center;
 }
+.error-message,
+.success-message{
+    text-align: center;
+    padding: 10px;
+}
+
+.error-message {
+    color: red;
+}
+
+.success-message {
+    color: green;
+}
