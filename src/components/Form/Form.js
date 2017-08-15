@@ -5,7 +5,7 @@ import { addUser } from '../../actions/index';
 class Form extends React.Component {
 
     state = {
-        registred: false
+        registered: false
     };
 
     resetFields = () => {
@@ -17,7 +17,7 @@ class Form extends React.Component {
 
     sayThanks = () => (
         this.setState((prevState) => ({
-            registred: !prevState.registred
+            registered: !prevState.registered
         }))
     );
 
@@ -33,7 +33,7 @@ class Form extends React.Component {
 
 
     render() {
-        const sayThanks = this.state.registred;
+        const sayThanks = this.state.registered;
         return (
             sayThanks
                 ?
