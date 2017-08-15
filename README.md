@@ -1,1 +1,1 @@
-It will be registration form
+Test task for NOUSPLATFORM.

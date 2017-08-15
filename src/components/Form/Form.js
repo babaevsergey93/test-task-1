@@ -3,34 +3,62 @@ import { connect } from 'react-redux';
 import './Form.css';
 import { addUser } from '../../actions/index';
 class Form extends React.Component {
-
     state = {
-        registered: false
+        name: '',
+        surname: '',
+        email: '',
+        password: '',
+        registered: false,
     };
 
-    resetFields = () => {
-        this.name.value = '';
-        this.surname.value = '';
-        this.email.value = '';
-        this.password.value = '';
-    };
+    resetFields = () => (
+        this.setState({
+            name: '',
+            surname: '',
+            email: '',
+            password: '',
+        })
+    );
 
     sayThanks = () => (
         this.setState((prevState) => ({
-            registered: !prevState.registered
+            registered: !prevState.registered,
         }))
     );
 
     handleSubmit = () =>  {
-        const name = this.name.value;
-        const surname = this.surname.value;
-        const email = this.email.value;
-        const password = this.password.value;
-        this.props.addUser(name, surname, email, password);
-        this.resetFields();
-        this.sayThanks();
-    }
+        const name = this.state.name;
+        const surname = this.state.surname;
+        const email = this.state.email;
+        const password = this.state.password;
 
+        if(name !== '' && surname !== '' && email !== '' && password !== '') {
+            this.props.addUser(name, surname, email, password);
+            this.resetFields();
+            this.sayThanks();
+        } else {
+           alert('Вы пытаетесь отправить форму с пустыми полями, пожалуйста заполните все поля.')
+        }
+    };
+
+    handleChange(e) {
+        switch(e.target.placeholder) {
+            case 'Name':
+                this.setState({name: e.target.value});
+                break;
+            case 'Surname':
+                this.setState({surname: e.target.value});
+                break;
+            case 'e-mail':
+                this.setState({email: e.target.value});
+                break;
+            case 'Password':
+                this.setState({password: e.target.value});
+                break;
+            default:
+                return this.state;
+        }
+    };
 
     render() {
         const sayThanks = this.state.registered;
@@ -43,10 +71,10 @@ class Form extends React.Component {
                     <form className="form" onSubmit = {(e) => {
                         e.preventDefault();
                     }}>
-                        <input ref={(input) => this.name = input} className='form-input' type="text" placeholder='Имя'/>
-                        <input ref={(input) => this.surname = input} className='form-input' type="text" placeholder='Фамилия'/>
-                        <input ref={(input) => this.email = input} className='form-input' type="text" placeholder='e-mail'/>
-                        <input ref={(input) => this.password = input} className='form-input' type="password" placeholder='Пароль'/>
+                        <input onChange={(e) => {this.handleChange(e)}} className='form-input' type="text" placeholder='Name'/>
+                        <input onChange={(e) => {this.handleChange(e)}} className='form-input' type="text" placeholder='Surname'/>
+                        <input onChange={(e) => {this.handleChange(e)}} className='form-input' type="text" placeholder='e-mail'/>
+                        <input onChange={(e) => {this.handleChange(e)}} className='form-input' type="password" placeholder='Password'/>
                         <input onClick = {this.handleSubmit} className='form-button' type="submit" value='Регистрация' />
                     </form>
                 </div>
@@ -55,7 +83,7 @@ class Form extends React.Component {
 }
 
 const mapStateToProps = (store) => ({
-    users: store
+    users: store,
 });
 
 const mapDispatchToProps = (dispatch) => ({
